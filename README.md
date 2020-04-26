@@ -174,7 +174,7 @@ https://api.apify.com/v2/datasets/zbg3vVF3NnXGZfdsX/items?format=json&clean=1&un
 * New reviews don't contain a rating from 1 to 5, but rather is positive or negative
 * Cut-off date for posts happen on the original posted date, not edited date, i.e: posts show as `February 20th 2:11AM`, but that's the edited date, the actual post date is `February 19th 11:31AM` provided on the DOM
 * The order of items aren't necessarily the same as seen on the page, and not sorted by date
-* Comments of comments aren't included.
+* Comments of comments (nested comments / conversations) aren't included in the output, only top level comments on the posts.
 
 ## Versioning
 
