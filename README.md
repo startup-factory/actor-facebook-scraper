@@ -182,7 +182,7 @@ This project adheres to semver.
 
 * Major versions means a change in the output or input format, and change in behavior.
 * Minor versions means new features
-* Patch versions means bug fixes / optimizations
+* Patch versions means bug fixes / optimizations (changed to `README.md` aren't tagged)
 
 ## Upcoming
 
