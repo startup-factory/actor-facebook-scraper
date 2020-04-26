@@ -314,7 +314,7 @@ Apify.main(async () => {
                             }),
                         ]);
                     } catch (e) {
-                        throw new InfoError('Wrong mobile version of content', {
+                        throw new InfoError('An unexpected page layout was returned by the server. This request will be retried shortly.', {
                             url: request.url,
                             namespace: 'mobile-meta',
                             userData,
@@ -335,7 +335,7 @@ Apify.main(async () => {
 
                     // throw away if page is not available
                     // but inform the user of error
-                    throw new InfoError('Content not found', {
+                    throw new InfoError('Content not found. This either means the page doesn\'t exist, or the section itself doesn\'t exist (about, reviews, services)', {
                         url: request.url,
                         namespace: 'isNotFoundPage',
                         userData,
