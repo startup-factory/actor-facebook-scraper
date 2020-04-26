@@ -376,7 +376,7 @@ export const getFieldInfos = async (page: Page, currentState: Partial<FbPage>): 
             timeout: 15000,
         });
     } catch (e) {
-        throw new InfoError('Profile with blank icons', {
+        throw new InfoError('Profile isn\'t loading the images, will be retried', {
             namespace: 'getFieldInfos',
             selector: 'img[src^="data"]',
             url,

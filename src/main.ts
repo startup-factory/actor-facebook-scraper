@@ -526,7 +526,7 @@ Apify.main(async () => {
                     // We want to inform the rich error before throwing
                     log.warning(e.message, e.toJSON());
 
-                    if (['captcha', 'mobile-meta'].includes(e.meta.namespace)) {
+                    if (['captcha', 'mobile-meta', 'getFieldInfos'].includes(e.meta.namespace)) {
                         // the session is really bad
                         session?.retire();
                         await puppeteerPool.retire(page.browser());
