@@ -67,6 +67,12 @@ Apify.main(async () => {
         throw new Error('You must specify a proxy');
     }
 
+    const handlePageTimeoutSecs = Math.round(60 * (((maxPostComments + maxPosts) || 10) * 0.33));
+
+    if (handlePageTimeoutSecs >= 0x7FFFFFFF) {
+        throw new Error('maxPosts parameter is too high');
+    }
+
     const startUrlsRequests = new Apify.RequestList({
         sources: startUrls,
     });
@@ -192,7 +198,7 @@ Apify.main(async () => {
                 ...proxyConfiguration,
             });
         },
-        handlePageTimeoutSecs: Math.round(60 * (((maxPostComments + maxPosts) || 10) * 0.33)), // more comments, less concurrency
+        handlePageTimeoutSecs, // more comments, less concurrency
         gotoFunction: async ({ page, request, puppeteerPool }) => {
             await setLanguageCodeToCookie(language, page);
 
