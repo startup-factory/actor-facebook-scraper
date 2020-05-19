@@ -69,8 +69,8 @@ Apify.main(async () => {
 
     const handlePageTimeoutSecs = Math.round(60 * (((maxPostComments + maxPosts) || 10) * 0.33));
 
-    if (handlePageTimeoutSecs >= 0x7FFFFFFF) {
-        throw new Error('maxPosts parameter is too high');
+    if (handlePageTimeoutSecs * 60000 >= 0x7FFFFFFF) {
+        throw new Error(`maxPosts + maxPostComments parameter is too high, must be less than ${0x7FFFFFFF} milliseconds in total, got ${handlePageTimeoutSecs * 60000}`);
     }
 
     const startUrlsRequests = new Apify.RequestList({
