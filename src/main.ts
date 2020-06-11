@@ -70,8 +70,13 @@ Apify.main(async () => {
     let handlePageTimeoutSecs = Math.round(60 * (((maxPostComments + maxPosts) || 10) * 0.01)) + 300; // minimum 300s
 
     if (handlePageTimeoutSecs * 60000 >= 0x7FFFFFFF) {
-        log.warning(`maxPosts + maxPostComments parameter is too high, must be less than ${0x7FFFFFFF} milliseconds in total, got ${handlePageTimeoutSecs * 60000}. Loading posts and comments might never finish or crash the scraper at any moment.`);
-        handlePageTimeoutSecs = 0x7FFFFFFF;
+        log.warning(`maxPosts + maxPostComments parameter is too high, must be less than ${0x7FFFFFFF} milliseconds in total, got ${handlePageTimeoutSecs * 60000}. Loading posts and comments might never finish or crash the scraper at any moment.`, {
+            maxPostComments,
+            maxPosts,
+            handlePageTimeoutSecs,
+            handlePageTimeout: handlePageTimeoutSecs * 60000,
+        });
+        handlePageTimeoutSecs = Math.floor(0x7FFFFFFF / 60000);
     }
 
     log.info(`Will use ${handlePageTimeoutSecs}s timeout for page`);
