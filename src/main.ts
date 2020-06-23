@@ -165,21 +165,30 @@ Apify.main(async () => {
     ] as FbSection[];
 
     for (const request of processedRequests) {
-        const { url } = request;
-        const urlType = getUrlLabel(url);
+        try {
+            const { url } = request;
+            const urlType = getUrlLabel(url);
 
-        if (urlType === 'PAGE') {
-            for (const subpage of generateSubpagesFromUrl(url, pageInfo)) {
-                await initSubPage(subpage, url);
+            if (urlType === 'PAGE') {
+                for (const subpage of generateSubpagesFromUrl(url, pageInfo)) {
+                    await initSubPage(subpage, url);
+                }
+            } else if (urlType === 'LISTING') {
+                await requestQueue.addRequest({
+                    url,
+                    userData: {
+                        label: urlType,
+                        useMobile: false,
+                    },
+                });
             }
-        } else if (urlType === 'LISTING') {
-            await requestQueue.addRequest({
-                url,
-                userData: {
-                    label: urlType,
-                    useMobile: false,
-                },
-            });
+        } catch (e) {
+            if (e instanceof InfoError) {
+                // We want to inform the rich error before throwing
+                log.warning(e.message, e.toJSON());
+            } else {
+                throw e;
+            }
         }
     }
 
