@@ -203,6 +203,7 @@ Apify.main(async () => {
         useSessionPool: true,
         sessionPoolOptions: {
             persistStateKeyValueStoreId: sessionStorage || undefined,
+            maxPoolSize: sessionStorage ? 1 : undefined,
         },
         maxRequestRetries: 5,
         autoscaledPoolOptions: {
