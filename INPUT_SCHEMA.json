@@ -1,6 +1,6 @@
 {
     "title": "facebook-page-crawler",
-    "description": "",
+    "description": "Extract public profile information from Facebook pages and service listings. The actor scrapes data from Facebook posts, comments, reviews, and more.",
     "type": "object",
     "schemaVersion": 1,
     "properties": {
@@ -351,6 +351,15 @@
                 "useApifyProxy": true
             },
             "editor": "proxy"
+        },
+        "sessionStorage": {
+            "title": "Session storage",
+            "description": "Provide a named session storage",
+            "type": "string",
+            "editor": "textfield",
+            "default": "",
+            "example": "named-storage",
+            "nullable": true
         }
     },
     "required": ["startUrls", "proxyConfiguration"]

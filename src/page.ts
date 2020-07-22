@@ -14,7 +14,7 @@ import {
     stopwatch,
     storyFbToDesktopPermalink,
 } from './functions';
-import { CSS_SELECTORS, DESKTOP_ADDRESS, PSN_POST_TYPE_BLACKLIST } from './constants';
+import { CSS_SELECTORS, DESKTOP_ADDRESS, PSN_POST_TYPE_BLACKLIST, LABELS } from './constants';
 import { InfoError } from './error';
 import type { FbPageInfo, FbPost, FbPage, FbGraphQl, FbComment, FbCommentsMode, FbReview, FbService } from './definitions';
 
@@ -125,12 +125,12 @@ export const getPagesFromListing = async (page: Page) => {
 /**
  * Get posts until it reaches the given max
  */
-export const getPostUrls = async (page: Page, { max, date, username }: { username: string; max?: number; date?: number | null }) => {
+export const getPostUrls = async (page: Page, { max, date, username, requestQueue }: { requestQueue: Apify.RequestQueue, username: string; max?: number; date?: number | null }) => {
     if (!max) {
         return [];
     }
 
-    const urls = new Map<string, { url: string; timestamp: number }>();
+    const urls = new Set<string>();
     const finish = deferred(); // gracefully finish
     const currentUrl = page.url();
 
@@ -168,14 +168,26 @@ export const getPostUrls = async (page: Page, { max, date, username }: { usernam
                     ) {
                         control.postpone();
 
-                        if (!postCutOffDate(timestamp)) {
+                        const isNewer = postCutOffDate(timestamp);
+
+                        if (!isNewer) {
                             olderCount++;
                         }
 
-                        urls.set(top_level_post_id, {
-                            timestamp,
-                            url,
-                        });
+                        urls.add(top_level_post_id);
+                        const parsed = storyFbToDesktopPermalink(url);
+
+                        if (isNewer && parsed) {
+                            await requestQueue.addRequest({
+                                url: parsed.href,
+                                userData: {
+                                    label: LABELS.POST,
+                                    useMobile: false,
+                                    username,
+                                    canonical: `${DESKTOP_ADDRESS}/${username}/posts/${parsed?.searchParams.get('story_fbid')}`,
+                                },
+                            });
+                        }
                     }
 
                     if (urls.size >= max || olderCount > Math.ceil(urls.size / 2)) {
@@ -240,22 +252,7 @@ export const getPostUrls = async (page: Page, { max, date, username }: { usernam
         page.off('response', interceptAjax);
     }
 
-    const processedPosts = [...urls.values()]
-        .filter((url) => {
-            return postCutOffDate(url.timestamp);
-        })
-        .map((url) => {
-            const parsed = storyFbToDesktopPermalink(url.url);
-
-            return {
-                url: parsed?.href,
-                canonical: `${DESKTOP_ADDRESS}/${username}/posts/${parsed?.searchParams.get('story_fbid')}`,
-            };
-        });
-
-    log.info(`Got ${processedPosts.length} posts in ${start() / 1000}s`, { username, url: currentUrl });
-
-    return processedPosts;
+    log.info(`Got ${urls.size} posts in ${start() / 1000}s`, { username, url: currentUrl });
 };
 
 /**
@@ -489,7 +486,6 @@ export const isNotFoundPage = async (page: Page) => {
     return !(await page.$(CSS_SELECTORS.VALID_PAGE));
 };
 
-
 /**
  * A couple of regex operations on the post page, that contains
  * statistics about the post itself
@@ -588,7 +584,13 @@ export const getPostComments = async (page: Page, { max, date, mode = 'RANKED_TH
 
         const interceptGrapQL = async (res: Response) => {
             if (res.url().includes('api/graphql/') && canStartAdding) {
-                const json = await res.json() as FbGraphQl;
+                let json: FbGraphQl | null = null;
+
+                try {
+                    json = await res.json() as FbGraphQl;
+                } catch (e) {
+                    log.debug(`res.json ${e.message}`, { url: res.url() });
+                }
 
                 if (json) {
                     const data = get(json, ['data', 'feedback', 'display_comments']);

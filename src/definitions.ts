@@ -46,6 +46,7 @@ export interface Schema {
     scrapeServices?: boolean;
     language?: string;
     commentsMode?: FbCommentsMode;
+    sessionStorage?: string;
 }
 
 export interface FbPageInfo {

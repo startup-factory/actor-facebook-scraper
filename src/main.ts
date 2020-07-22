@@ -53,6 +53,7 @@ Apify.main(async () => {
         scrapePosts = true,
         scrapeServices = true,
         language = 'en-US',
+        sessionStorage = '',
     } = input;
 
     if (!Array.isArray(startUrls) || !startUrls.length) {
@@ -193,10 +194,16 @@ Apify.main(async () => {
     }
 
     const maxConcurrency = process.env?.MAX_CONCURRENCY ? +process.env.MAX_CONCURRENCY : undefined;
+    const proxyConfig = await Apify.createProxyConfiguration({
+        ...proxyConfiguration,
+    });
 
     const crawler = new Apify.PuppeteerCrawler({
         requestQueue,
         useSessionPool: true,
+        sessionPoolOptions: {
+            persistStateKeyValueStoreId: sessionStorage || undefined,
+        },
         maxRequestRetries: 5,
         autoscaledPoolOptions: {
             // make it easier to debug locally with slowMo without switching tabs
@@ -205,16 +212,21 @@ Apify.main(async () => {
         puppeteerPoolOptions: {
             maxOpenPagesPerInstance: maxConcurrency,
         },
+        proxyConfiguration: proxyConfig || undefined,
         launchPuppeteerFunction: async (options) => {
             return Apify.launchPuppeteer({
                 ...options,
                 slowMo: log.getLevel() === log.LEVELS.DEBUG ? 100 : undefined,
                 useChrome: Apify.isAtHome(),
                 stealth: true,
-                args: ['--disable-dev-shm-usage', '--disable-setuid-sandbox'],
-                ...proxyConfiguration,
+                args: [
+                    ...options?.args,
+                    '--disable-dev-shm-usage',
+                    '--disable-setuid-sandbox',
+                ],
             });
         },
+        persistCookiesPerSession: sessionStorage !== '',
         handlePageTimeoutSecs, // more comments, less concurrency
         gotoFunction: async ({ page, request, puppeteerPool }) => {
             await setLanguageCodeToCookie(language, page);
@@ -439,23 +451,13 @@ Apify.main(async () => {
                         case 'posts':
                             // We don't do anything here, we enqueue posts to be
                             // read on their own phase/label
-                            for (const url of await getPostUrls(page, {
+                            await getPostUrls(page, {
                                 max: maxPosts,
                                 date: processedPostDate,
                                 username,
-                            })) {
-                                if (url.url) {
-                                    await requestQueue.addRequest({
-                                        url: url.url,
-                                        userData: {
-                                            label: LABELS.POST,
-                                            useMobile: false,
-                                            username,
-                                            canonical: url.canonical,
-                                        },
-                                    });
-                                }
-                            }
+                                requestQueue,
+                            });
+
                             break;
                         // Reviews if any
                         case 'reviews':
