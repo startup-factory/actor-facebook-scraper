@@ -2,6 +2,8 @@ import Apify from 'apify';
 import type { Page, Response } from 'puppeteer';
 import DelayAbort, { AbortError } from 'delayable-idle-abort-promise';
 import * as escapeRegex from 'escape-string-regexp';
+import get = require('lodash.get');
+import type { FbPageInfo, FbPost, FbPage, FbGraphQl, FbComment, FbCommentsMode, FbReview, FbService, FbMap } from './definitions';
 import {
     deferred,
     pageSelectors,
@@ -16,9 +18,6 @@ import {
 } from './functions';
 import { CSS_SELECTORS, DESKTOP_ADDRESS, PSN_POST_TYPE_BLACKLIST, LABELS } from './constants';
 import { InfoError } from './error';
-import type { FbPageInfo, FbPost, FbPage, FbGraphQl, FbComment, FbCommentsMode, FbReview, FbService } from './definitions';
-
-import get = require('lodash.get');
 
 const { log, sleep } = Apify.utils;
 
@@ -258,7 +257,16 @@ export const getPostUrls = async (page: Page, { max, date, username, requestQueu
 /**
  * Get the reviews until it reaches the given max
  */
-export const getReviews = async (page: Page, { date, max }: { max?: number; date?: number | null }): Promise<FbPage['reviews'] | undefined> => {
+export const getReviews = async (
+    page: Page,
+    {
+        date,
+        max,
+    }: {
+        max?: number;
+        date?: number | null;
+    },
+): Promise<FbPage['reviews'] | undefined> => {
     if (!max) {
         return;
     }
@@ -566,7 +574,17 @@ export const getPostContent = async (page: Page): Promise<Partial<FbPost>> => {
 /**
  * Interact with the page to the the comments
  */
-export const getPostComments = async (page: Page, { max, date, mode = 'RANKED_THREADED' }: { max?: number; date?: number | null; mode?: FbCommentsMode }): Promise<FbPost['postComments']> => {
+export const getPostComments = async (
+    page: Page,
+    {
+        max,
+        date,
+        mode = 'RANKED_THREADED',
+    }: {
+        max?: number;
+        date?: number | null;
+        mode?: FbCommentsMode
+    }): Promise<FbPost['postComments']> => {
     const comments = new Map<string, FbComment>();
 
     const finish = deferred(); // gracefully finish

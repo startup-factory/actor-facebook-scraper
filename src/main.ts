@@ -54,6 +54,7 @@ Apify.main(async () => {
         scrapeServices = true,
         language = 'en-US',
         sessionStorage = '',
+        useStealth = false,
     } = input;
 
     if (!Array.isArray(startUrls) || !startUrls.length) {
@@ -219,10 +220,21 @@ Apify.main(async () => {
                 ...options,
                 slowMo: log.getLevel() === log.LEVELS.DEBUG ? 100 : undefined,
                 useChrome: Apify.isAtHome(),
-                stealth: true,
+                stealth: useStealth,
+                stealthOptions: {
+                    addLanguage: false,
+                    addPlugins: false,
+                    emulateConsoleDebug: false,
+                    emulateWebGL: false,
+                    hideWebDriver: true,
+                    emulateWindowFrame: false,
+                    hackPermissions: false,
+                    mockChrome: false,
+                    mockDeviceMemory: false,
+                    mockChromeInIframe: false,
+                },
                 args: [
                     ...options?.args,
-                    '--disable-dev-shm-usage',
                     '--disable-setuid-sandbox',
                 ],
             });
@@ -463,13 +475,13 @@ Apify.main(async () => {
                         // Reviews if any
                         case 'reviews':
                             try {
-                                const reviewData = await getReviews(page, {
+                                const reviewsData = await getReviews(page, {
                                     max: maxReviews,
                                     date: processedReviewDate,
                                 });
 
-                                if (reviewData) {
-                                    const { average, count, reviews } = reviewData;
+                                if (reviewsData) {
+                                    const { average, count, reviews } = reviewsData;
 
                                     await map.append(username, async (value) => {
                                         return {
@@ -499,7 +511,7 @@ Apify.main(async () => {
                             });
                     }
                 } else if (label === LABELS.POST) {
-                    const post = stopwatch();
+                    const postTimer = stopwatch();
 
                     log.debug('Started processing post', { url: request.url });
 
@@ -532,7 +544,7 @@ Apify.main(async () => {
                         };
                     });
 
-                    log.info(`Processed post in ${post() / 1000}s`, { url: request.url });
+                    log.info(`Processed post in ${postTimer() / 1000}s`, { url: request.url });
                 } else {
                     throw new InfoError(`Invalid label found ${userData.label}`, {
                         url: request.url,

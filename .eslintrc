@@ -13,7 +13,7 @@
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 2018,
+        "ecmaVersion": 2020,
         "sourceType": "module",
         "ecmaFeatures": {
             "modules": true
@@ -29,7 +29,10 @@
         "arrow-parens": 0,
         "camelcase": 0,
         "max-len": 0,
+        "no-undef": 0,
         "no-unused-expressions": 1,
+        "import/first": 0,
+        "@typescript-eslint/explicit-module-boundary-types": 0,
         "@typescript-eslint/no-floating-promises": 2,
         "@typescript-eslint/no-unused-vars": [2, { "args": "none" }],
         "@typescript-eslint/semicolon": 0,

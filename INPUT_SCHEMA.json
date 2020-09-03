@@ -354,12 +354,19 @@
         },
         "sessionStorage": {
             "title": "Session storage",
-            "description": "Provide a named session storage",
+            "description": "Provide a named session storage. Should be used in conjunction with login session actor. The same sessionStorage name should be supplied here. Don't use this unless you have a task that does Facebook logins using login-session actor",
             "type": "string",
             "editor": "textfield",
             "default": "",
             "example": "named-storage",
+            "sectionCaption": "Experimental features",
+            "sectionDescription": "Features in this section are highly experimental, can result in a ban of the account if logged in and might cause the solution to fail.",
             "nullable": true
+        },
+        "useStealth": {
+            "title": "Use stealth",
+            "description": "Enable stealth on headless Chrome. Enable this only if you're having problems with blocking.",
+            "type": "boolean"
         }
     },
     "required": ["startUrls", "proxyConfiguration"]

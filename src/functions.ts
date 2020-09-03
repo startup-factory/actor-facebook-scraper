@@ -295,24 +295,24 @@ export const createSelectorFromImageSrc = (names: string[]) => {
  * Text selectors that uses image names as a starting point
  */
 export const imageSelectors = {
-    checkins: createSelectorFromImageSrc(['a0b87sO1_bq']),
-    website: createSelectorFromImageSrc(['TcXGKbk-rV1', 'xVA3lB-GVep', 'EaDvTjOwxIV', 'aE7VLFYMYdl']),
-    categories: createSelectorFromImageSrc(['Knsy-moHXi6', 'LwDWwC1d0Rx', '3OfQvJdYD_W']),
-    email: createSelectorFromImageSrc(['C1eWXyukMez', 'vKDzW_MdhyP']),
-    info: createSelectorFromImageSrc(['u_owK2Sz5n6', 'fTt3W6Nw8z-']), // about / founded
-    impressum: createSelectorFromImageSrc(['7Pg05R2u_QQ']),
-    instagram: createSelectorFromImageSrc(['EZj5-1P4vhh']),
-    twitter: createSelectorFromImageSrc(['IP-E0-f5J0m']),
+    checkins: createSelectorFromImageSrc(['a0b87sO1_bq', '9Zt6zuj8e1D']),
+    website: createSelectorFromImageSrc(['TcXGKbk-rV1', 'xVA3lB-GVep', 'EaDvTjOwxIV', 'aE7VLFYMYdl', '_E0siE7VRxg']),
+    categories: createSelectorFromImageSrc(['Knsy-moHXi6', 'LwDWwC1d0Rx', '3OfQvJdYD_W', 'Esxx6rJcLfG']),
+    email: createSelectorFromImageSrc(['C1eWXyukMez', 'vKDzW_MdhyP', 'vPTKpTJr2Py']),
+    info: createSelectorFromImageSrc(['u_owK2Sz5n6', 'fTt3W6Nw8z-', 'ufx6pe0BYZ9', 'nUK82gYKq3c']), // about / founded
+    impressum: createSelectorFromImageSrc(['7Pg05R2u_QQ', 'xJ79lPp3fxx']),
+    instagram: createSelectorFromImageSrc(['EZj5-1P4vhh', 'kupnBwrQuQt']),
+    twitter: createSelectorFromImageSrc(['IP-E0-f5J0m', '4D5dB8JnGdq']),
     youtube: createSelectorFromImageSrc(['MyCpzAb80U1']),
-    overview: createSelectorFromImageSrc(['uAsvCr33XaU']),
-    awards: createSelectorFromImageSrc(['rzXNHRgEfui']),
-    mission: createSelectorFromImageSrc(['z-wfU5xgk6Z']),
-    address: createSelectorFromImageSrc(['h2e1qHNjIzG']),
-    phone: createSelectorFromImageSrc(['6oGknb-0EsE', 'znYEAkatLCe']),
-    priceRange: createSelectorFromImageSrc(['q-WY9vrfkFZ']),
-    products: createSelectorFromImageSrc(['bBMZ-3vnEih']),
-    transit: createSelectorFromImageSrc(['uQHLMTQ0fUS']),
-    payment: createSelectorFromImageSrc(['Dx9c291MaDt']),
+    overview: createSelectorFromImageSrc(['uAsvCr33XaU', 'J7QgCgbppF8']),
+    awards: createSelectorFromImageSrc(['rzXNHRgEfui', 'catvAig7x2x']),
+    mission: createSelectorFromImageSrc(['z-wfU5xgk6Z', '3vccp1jK8fn']),
+    address: createSelectorFromImageSrc(['h2e1qHNjIzG', 'ya-WX5CZARc']),
+    phone: createSelectorFromImageSrc(['6oGknb-0EsE', 'znYEAkatLCe', 'BaiUsFiMGWy']),
+    priceRange: createSelectorFromImageSrc(['q-WY9vrfkFZ', 'cAfaJdw2ZpN']),
+    products: createSelectorFromImageSrc(['bBMZ-3vnEih', '9gnPGIXZf0x']),
+    transit: createSelectorFromImageSrc(['uQHLMTQ0fUS', 'hHYECN5fVxU']),
+    payment: createSelectorFromImageSrc(['Dx9c291MaDt', '8qES65kbIT8']),
 };
 
 /**

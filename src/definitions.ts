@@ -1,6 +1,7 @@
 export type FbSection = 'home' | 'posts' | 'about' | 'reviews' | 'services';
 export type FbLabel = 'LISTING' | 'PAGE' | 'POST';
 export type FbCommentsMode = 'RANKED_THREADED' | 'RECENT_ACTIVITY' | 'RANKED_UNFILTERED';
+export type FbMap = Map<string, Partial<FbPage>>;
 
 export interface FbGraphQl {
     // only the important parts
@@ -47,6 +48,7 @@ export interface Schema {
     language?: string;
     commentsMode?: FbCommentsMode;
     sessionStorage?: string;
+    useStealth?: boolean;
 }
 
 export interface FbPageInfo {
