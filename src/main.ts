@@ -96,9 +96,9 @@ Apify.main(async () => {
               requestListSources = lines.map(line => {
                   let [id, url] = line.trim().split('\t');
                   if (!url) { return false }
-                  // if (!/http(s?):\/\//g.test(url)) {
-                  //     url = `http://${url}`
-                  // }
+                  if (!/http(s?):\/\//g.test(url)) {
+                      url = `http://${url}`
+                  }
                   Apify.utils.log.info(`csv extraction: id: ${id} url ${url}`);
                   return {url, userData: {id}};
               }).filter(req => !!req);

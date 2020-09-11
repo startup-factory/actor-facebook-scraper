@@ -536,8 +536,15 @@ export const getUrlLabel = (url: string): FbLabel => {
         });
     }
 
-    const parsedUrl = new URL(url);
-
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(url);
+    } catch (e) {
+      throw new InfoError('Invalid URL', {
+          url,
+          namespace: 'getUrlLabel',
+      });
+    }
     // works with m.facebook.com, lang-country.facebook.com, www.latest.facebook.com
     if (parsedUrl.hostname.includes('facebook.com')) {
         if (parsedUrl.pathname.startsWith('/biz/')) {
