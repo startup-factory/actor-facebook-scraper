@@ -361,7 +361,7 @@ Apify.main(async () => {
 
             const label: FbLabel = userData.label; // eslint-disable-line prefer-destructuring
 
-            log.debug(`Visiting page ${request.url}`);
+            log.info(`Visiting page ${request.url} - ${label}`);
 
             try {
                 if (userData.useMobile) {
