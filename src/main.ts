@@ -361,7 +361,7 @@ Apify.main(async () => {
 
             const label: FbLabel = userData.label; // eslint-disable-line prefer-destructuring
 
-            log.info(`Visiting page ${request.url} - ${label}`);
+            log.info(`Visiting page ${request.url} - ${label} - ${userData.sub}`);
 
             try {
                 if (userData.useMobile) {
@@ -453,7 +453,7 @@ Apify.main(async () => {
                                 })
                                 return {
                                     ...fieldsInfo,
-                                    sourceId: userData.id,
+                                    dtId: userData.id,
                                 }
                             });
                             break;
@@ -480,11 +480,15 @@ Apify.main(async () => {
                             break;
                         // About if any
                         case 'about':
-                            await map.append(username, async (value) => {
+                            let fieldsInfo = await map.append(username, async (value) => {
                                 return getFieldInfos(page, {
                                     ...value,
                                 });
                             });
+                            return {
+                                ...fieldsInfo,
+                                dtId: userData.id,
+                            }
                             break;
                         // Posts
                         case 'posts':
