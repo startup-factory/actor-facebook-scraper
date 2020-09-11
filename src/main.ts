@@ -105,7 +105,6 @@ Apify.main(async () => {
           }
         }
     }
-    log.info(`requestListSources: ${requestListSources[0].url} ${requestListSources[0].userData.id}`)
     const startUrlsRequests = new Apify.RequestList({
         sources: requestListSources,
     });
@@ -194,7 +193,6 @@ Apify.main(async () => {
         try {
             const { url, userData } = request;
             const urlType = getUrlLabel(url);
-            log.info(`initSubPage userData ${userData.id}`);
 
             if (urlType === 'PAGE') {
                 for (const subpage of generateSubpagesFromUrl(url, pageInfo)) {
@@ -367,7 +365,7 @@ Apify.main(async () => {
 
             const label: FbLabel = userData.label; // eslint-disable-line prefer-destructuring
 
-            log.info(`Visiting page ${request.url} - ${label} - ${userData.sub} - ${userData.id}`);
+            log.info(`Visiting page ${request.url} - ${label} - ${userData.sub}`);
 
             try {
                 if (userData.useMobile) {
@@ -457,10 +455,6 @@ Apify.main(async () => {
                                         ...address,
                                     },
                                 })
-                                log.info(`home info ${fieldsInfo}`);
-                                log.info(`dtId: ${userData.id}`);
-                                log.info(`label: ${label}`);
-
                                 return {
                                     ...fieldsInfo,
                                     label,
@@ -492,17 +486,9 @@ Apify.main(async () => {
                         // About if any
                         case 'about':
                             await map.append(username, async (value) => {
-                                let fieldsInfo = await getFieldInfos(page, {
+                                return getFieldInfos(page, {
                                     ...value,
                                 });
-                                log.info(`about info ${fieldsInfo}`);
-                                log.info(`dtId: ${userData.id}`);
-                                log.info(`label: ${label}`);
-                                return {
-                                  dtId: userData.id,
-                                  label,
-                                  ...fieldsInfo
-                                }
                             });
 
                             break;
