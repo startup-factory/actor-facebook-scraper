@@ -33,7 +33,7 @@ export interface FbGraphQl {
 }
 
 export interface Schema {
-    startUrls: Array<string | { url: string }>;
+    startUrls: any | Array<string | { url: string }>;
     proxyConfiguration?: any;
     maxPosts?: number;
     maxPostDate?: string;

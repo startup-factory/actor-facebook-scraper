@@ -83,8 +83,29 @@ Apify.main(async () => {
 
     log.info(`Will use ${handlePageTimeoutSecs}s timeout for page`);
 
+    let requestListSources;
+    for (const startUrl of startUrls) {
+        Apify.utils.log.info(`startUrl: ${startUrl}`);
+        if (startUrl){
+          const {requestsFromUrl} = startUrl;
+          Apify.utils.log.info(`requestsFromUrl: ${requestsFromUrl}`);
+          if (requestsFromUrl){
+              const { body } = await Apify.utils.requestAsBrowser({ url: requestsFromUrl, encoding:'utf-8' });
+              let lines = body.split('\n');
+              requestListSources = lines.map(line => {
+                  let [id, url] = line.trim().split('\t');
+                  if (!url) { return false }
+                  // if (!/http(s?):\/\//g.test(url)) {
+                  //     url = `http://${url}`
+                  // }
+                  Apify.utils.log.info(`csv extraction: id: ${id} url ${url}`);
+                  return {url, userData: {id}};
+              }).filter(req => !!req);
+          }
+        }
+    }
     const startUrlsRequests = new Apify.RequestList({
-        sources: startUrls,
+        sources: requestListSources,
     });
 
     await startUrlsRequests.initialize();
@@ -168,7 +189,7 @@ Apify.main(async () => {
 
     for (const request of processedRequests) {
         try {
-            const { url } = request;
+            const { url, userData } = request;
             const urlType = getUrlLabel(url);
 
             if (urlType === 'PAGE') {
@@ -179,6 +200,7 @@ Apify.main(async () => {
                 await requestQueue.addRequest({
                     url,
                     userData: {
+                        id: userData.id,
                         label: urlType,
                         useMobile: false,
                     },
@@ -415,8 +437,7 @@ Apify.main(async () => {
                                     verified,
                                     ...address
                                 } = await getPageInfo(page);
-
-                                return getFieldInfos(page, {
+                                let fieldsInfo = getFieldInfos(page, {
                                     ...value,
                                     likes,
                                     messenger,
@@ -428,7 +449,11 @@ Apify.main(async () => {
                                         ...value?.address,
                                         ...address,
                                     },
-                                });
+                                })
+                                return {
+                                    ...fieldsInfo,
+                                    sourceId: userData.id,
+                                }
                             });
                             break;
                         // Services if any
