@@ -451,6 +451,8 @@ Apify.main(async () => {
                                         ...address,
                                     },
                                 })
+                                log.info(`home info ${fieldsInfo}`);
+                                log.info(`dtId: ${userData.id}`);
                                 return {
                                     ...fieldsInfo,
                                     dtId: userData.id,
@@ -480,15 +482,18 @@ Apify.main(async () => {
                             break;
                         // About if any
                         case 'about':
-                            let fieldsInfo = await map.append(username, async (value) => {
-                                return getFieldInfos(page, {
+                            await map.append(username, async (value) => {
+                                let fieldsInfo = getFieldInfos(page, {
                                     ...value,
                                 });
+                                log.info(`about info ${fieldsInfo}`);
+                                log.info(`dtId: ${userData.id}`);
+                                return {
+                                  dtId: userData.id,
+                                  ...fieldsInfo
+                                }
                             });
-                            return {
-                                ...fieldsInfo,
-                                dtId: userData.id,
-                            }
+
                             break;
                         // Posts
                         case 'posts':
