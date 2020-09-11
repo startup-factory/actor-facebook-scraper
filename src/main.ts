@@ -105,6 +105,7 @@ Apify.main(async () => {
           }
         }
     }
+    log.info(`requestListSources: ${requestListSources[0].url} ${requestListSources[0].userData.id}`)
     const startUrlsRequests = new Apify.RequestList({
         sources: requestListSources,
     });
@@ -192,6 +193,7 @@ Apify.main(async () => {
         try {
             const { url, userData } = request;
             const urlType = getUrlLabel(url);
+            log.info(`initSubPage userData ${userData.id}`);
 
             if (urlType === 'PAGE') {
                 for (const subpage of generateSubpagesFromUrl(url, pageInfo)) {
