@@ -154,7 +154,7 @@ Apify.main(async () => {
         throw new Error('No requests were loaded from startUrls');
     }
 
-    const initSubPage = async (subpage: { url: string; section: FbSection }, url: string) => {
+    const initSubPage = async (subpage: { url: string; section: FbSection, dtId: string }, url: string) => {
         if (subpage.section === 'home') {
             const username = extractUsernameFromUrl(subpage.url);
 
@@ -176,6 +176,7 @@ Apify.main(async () => {
             userData: {
                 label: 'PAGE' as FbLabel,
                 sub: subpage.section,
+                id: subpage.dtId,
                 ref: url,
                 useMobile: true,
             },
@@ -197,7 +198,10 @@ Apify.main(async () => {
 
             if (urlType === 'PAGE') {
                 for (const subpage of generateSubpagesFromUrl(url, pageInfo)) {
-                    await initSubPage(subpage, url);
+                    await initSubPage({
+                      dtId: userData.id,
+                      ...subpage
+                    }, url);
                 }
             } else if (urlType === 'LISTING') {
                 await requestQueue.addRequest({
