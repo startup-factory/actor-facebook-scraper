@@ -361,7 +361,7 @@ Apify.main(async () => {
 
             const label: FbLabel = userData.label; // eslint-disable-line prefer-destructuring
 
-            log.info(`Visiting page ${request.url} - ${label} - ${userData.sub}`);
+            log.info(`Visiting page ${request.url} - ${label} - ${userData.sub} - ${userData.id}`);
 
             try {
                 if (userData.useMobile) {
@@ -438,7 +438,7 @@ Apify.main(async () => {
                                     verified,
                                     ...address
                                 } = await getPageInfo(page);
-                                let fieldsInfo = getFieldInfos(page, {
+                                let fieldsInfo = await getFieldInfos(page, {
                                     ...value,
                                     likes,
                                     messenger,
@@ -453,8 +453,11 @@ Apify.main(async () => {
                                 })
                                 log.info(`home info ${fieldsInfo}`);
                                 log.info(`dtId: ${userData.id}`);
+                                log.info(`label: ${label}`);
+
                                 return {
                                     ...fieldsInfo,
+                                    label,
                                     dtId: userData.id,
                                 }
                             });
@@ -483,13 +486,15 @@ Apify.main(async () => {
                         // About if any
                         case 'about':
                             await map.append(username, async (value) => {
-                                let fieldsInfo = getFieldInfos(page, {
+                                let fieldsInfo = await getFieldInfos(page, {
                                     ...value,
                                 });
                                 log.info(`about info ${fieldsInfo}`);
                                 log.info(`dtId: ${userData.id}`);
+                                log.info(`label: ${label}`);
                                 return {
                                   dtId: userData.id,
+                                  label,
                                   ...fieldsInfo
                                 }
                             });
