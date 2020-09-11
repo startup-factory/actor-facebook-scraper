@@ -92,6 +92,7 @@ Apify.main(async () => {
           if (requestsFromUrl){
               const { body } = await Apify.utils.requestAsBrowser({ url: requestsFromUrl, encoding:'utf-8' });
               let lines = body.split('\n');
+              delete  lines[0]
               requestListSources = lines.map(line => {
                   let [id, url] = line.trim().split('\t');
                   if (!url) { return false }
